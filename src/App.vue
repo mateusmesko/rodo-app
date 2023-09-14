@@ -4,13 +4,13 @@
       v-model="drawer"
       app
     >
-      <Navigation v-if="this.drawer"/>
+      <Navigation v-if="this.drawer" @close="drawerValidate"/>
     </v-navigation-drawer>
 
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawerValidate"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>RODO APP</v-toolbar-title>
+      <v-toolbar-title>{{ $t('titleAplication') }}</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -29,12 +29,11 @@ export default {
   },
 
   data: () => ({
-    drawer: null 
+    drawer: false 
   }),
 
   methods:{
     drawerValidate(){
-      console.log(this.drawer)
       this.drawer = this.drawer ?  false : true
     }
   }

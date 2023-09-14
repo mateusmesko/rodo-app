@@ -9,8 +9,9 @@
                 <v-col
                 md="3"
             >
-                <v-text-field
-                label="produto"
+                <v-text-field 
+                    v-model="product.nameProduct"
+                    label="produto"
                 ></v-text-field>
             </v-col>
             
@@ -18,7 +19,8 @@
                 md="3"
             >
                 <v-text-field
-                label="quantidade"
+                    v-model="product.amontProduct"
+                    label="quantidade"
                 ></v-text-field>
             </v-col>
 
@@ -26,6 +28,7 @@
                 md="3"
             >
                 <v-text-field
+                v-model="product.discountProduct"
                 type="number"
                 prefix="$"
                 label="Desconto"
@@ -37,6 +40,7 @@
                 md="3"
             >
                 <v-text-field
+                v-model="product.valueProduct"
                 type="number"
                 prefix="$"
                 label="valor"
@@ -47,6 +51,7 @@
                 md="3"
             >
                 <v-text-field
+                v-model="product.observationProduct"
                 label="Observação"
                 ></v-text-field>
             </v-col>
@@ -56,6 +61,7 @@
                 md="3"
             >
                 <v-text-field
+                v-model="product.suggestionProduct"
                 label="Sugestão(link do produto)"
                 ></v-text-field>
             </v-col>
@@ -64,6 +70,7 @@
                 md="3"
             >
                 <v-text-field
+                v-model="product.reasonProduct"
                 label="Motivo de solicitação"
                 ></v-text-field>
                 <!-- verificar melhor como configurar o tipo de solicitação / despesa -->
@@ -73,6 +80,7 @@
                 md="3"
             >
                 <v-text-field
+                v-model="product.dataShipDateProduct"
                 type="date"
                 label="Previsão de entrega"
                 ></v-text-field>
@@ -83,7 +91,7 @@
                 md="3"
             >
                  <v-select
-                    v-model="select"
+                    v-model="product.statusShipProduct"
                     :hint="`${select.state}`"
                     :items="items"
                     :color="select.color"
@@ -103,9 +111,12 @@
 <script>
     export default {
         name: 'ProductRequest',
-
+        props: {
+            product: Object
+        },
         data: () => ({
             select: { state: 'Aguardando', color: 'alert' },
+            
             items: [
                 { state: 'Cancelada' ,color: 'red' },
                 { state: 'Aguardando', color: 'yellow lighten-1' },

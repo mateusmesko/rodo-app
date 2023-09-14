@@ -42,7 +42,7 @@
             <v-col
               sm="1"
             >
-                <v-tooltip bottom color="warning">
+                <v-tooltip bottom color="#B3261E   ">
                     <template v-slot:activator="{ on, attrs }">
                         <v-icon
                             color="warning"
@@ -54,11 +54,10 @@
                         </v-icon>
                     </template>
                     
-                    <span>  
-                        <v-icon dark>
+                    <span>
+                        <v-icon color="#fff" dark>
                             mdi-alert-outline
                         </v-icon>
-
                         Validar chave no site da sefaz
                     </span>
                 </v-tooltip>

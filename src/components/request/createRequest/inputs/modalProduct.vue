@@ -21,7 +21,7 @@
 				</v-col>
 			</v-row>
 			
-			<ProductRequest />
+			<ProductRequest :product="product"/>
 		</div>
 	</div>
 </template>
@@ -38,7 +38,8 @@ export default {
 		show: Boolean,
 		title: String,
 		content: String,
-		cep:String
+		cep:String,
+		product:Object
 	},
 
 	methods: {

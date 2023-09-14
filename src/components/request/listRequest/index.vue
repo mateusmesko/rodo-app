@@ -1,55 +1,164 @@
 <template>
-  <div>
-    <h1>Dados da API da TOTVS</h1>
-    <ul>
-      <li v-if="!loading">
-       carregando...
-      </li>
-      <li v-if="loading" v-for="item in items" :key="item.code">
-        Código: {{ item.Code }}, Descrição: {{ item.Description }}
-      </li>
-    </ul>
-  </div>
+	<div >
+		<template>
+			<v-btn @click="goRoute()" color="green">{{ $t('request.createRequest') }}</v-btn>
+			<v-simple-table>
+				<template v-slot:default>
+					<thead>
+						<toolbar :toobarList="toolbartTitles"/>
+					</thead>
+
+					<tbody>
+						<tr v-for="(item, index) in desserts"
+							:key="item.name"
+						>
+							<td>{{ index + 1 }}</td>
+							<td>
+								<span v-if="isMultipleNote()">
+									<v-btn v-if="isMultipleNote()" @click="testeBTNTOOLBAR" icon>
+										<ButtonTooltip 
+											corzinha="green" 
+											:icon="$t('request.icon.notes')"
+											:title="$t('request.iconTooltip.notes')"   
+										/>
+									</v-btn>
+								</span>
+
+								<span v-if="!isMultipleNote()">
+									<v-btn @click="testeBTNTOOLBAR" icon>
+										<ButtonTooltip
+											corzinha="red"
+											:icon="$t('request.icon.onlyNote')"
+											:title="$t('request.iconTooltip.onlyNote')"
+										/>
+									</v-btn>
+								</span>
+							</td>
+							<td>nome do fornecedor</td>
+							<td>status</td>
+							<td>status</td>
+							<td>status</td>
+							<td class="text-center">
+								<v-btn @click="testeBTNTOOLBAR" icon>
+									<ButtonTooltip
+										corzinha="blue"
+										:icon="$t('request.icon.infoRequest')"
+										:title="$t('request.iconTooltip.infoRequest')"
+									/>
+								</v-btn>
+
+								<v-btn @click="testeBTNTOOLBAR" icon>
+									<ButtonTooltip
+										corzinha="green"
+										:icon="$t('request.icon.editRequest')"
+										:title="$t('request.iconTooltip.editRequest')"
+									/>
+								</v-btn>
+							</td>
+						</tr>
+					</tbody>
+				</template>
+			</v-simple-table>
+		</template>
+	</div>
 </template>
 
 <script>
-import axios from 'axios';
+import ButtonTooltip from '../../tools/buttonIconTooltip'
+import Toolbar from '../../tools/toolbar'
 
 export default {
-  data() {
-    return {
-      apiUrl: 'http://rodoparanaimplementos120531.protheus.cloudtotvs.com.br:4050/rest/api/retail/v1/retailItem?page=1&pageSize=5000&fields=code,description',
-      items: [], // Armazenará os dados da API
-      loading: false
-    };
-  },
-  mounted() {
-    this.loading = false
-    // Faz a solicitação GET usando o Axios
-    axios
-      .get(this.apiUrl)
-      .then(response => {
-        // Verifica se a resposta da API foi bem-sucedida (código de status 200)
-        if (response.status !== 200) {
-          console.error('Erro na solicitação:', response.status);
-          throw new Error('Não foi possível acessar a API da TOTVS');
-        }
+	name: 'Home',
 
-        // Armazena os dados da API na variável 'items'
-        this.items = response.data.items;
+	components:{
+		Toolbar,
+		ButtonTooltip,
+	},
 
-        localStorage.setItem('PRODUCTS', JSON.stringify(this.items));
+	props: {
+		
+	},
 
-        // Recupere o objeto do localStorage e converta de volta para um objeto
-        const objetoSalvo = JSON.parse(localStorage.getItem('PRODUCTS')); 
+	data: () => ({
+		toolbartTitles:[
+			{title:'request.table.numberRequest'},
+			{title:'request.table.NumberNotes'},
+			{title:'request.table.supplier'},
+			{title:'request.table.statusShip'},
+			{title:'request.table.statusOrdem'},
+			{title:'request.table.statusPay'},
+			{title:'request.table.actions'}
+		],
 
-        console.log(objetoSalvo)
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-      });
+		desserts: [
+			{
+				name: 'Frozen Yogurt',
+				calories: 159,
+			},
 
-      this.loading = true
-  },
-};
+			{
+				name: 'Ice cream sandwich',
+				calories: 237,
+			},
+
+			{
+				name: 'Eclair',
+				calories: 262,
+			},
+
+			{
+				name: 'Cupcake',
+				calories: 305,
+			},
+
+			{
+				name: 'Gingerbread',
+				calories: 356,
+			},
+
+			{
+				name: 'Jelly bean',
+				calories: 375,
+			},
+
+			{
+				name: 'Lollipop',
+				calories: 392,
+			},
+
+			{
+				name: 'Honeycomb',
+				calories: 408,
+			},
+
+			{
+				name: 'Donut',
+				calories: 452,
+			},
+
+			{
+				name: 'KitKat',
+				calories: 518,
+			},
+		],
+	}),
+
+	methods:{
+		goRoute(){
+			this.$router.push({ name: 'create' })
+		},
+
+		isMultipleNote(){
+			return true
+		},
+		testeBTNTOOLBAR(){
+			console.log('teste btn')
+		}
+	}
+}
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+</style>
