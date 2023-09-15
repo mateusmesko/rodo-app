@@ -7,7 +7,12 @@
 					<thead>
 						<toolbar :toobarList="toolbartTitles"/>
 					</thead>
-
+					<!-- <h1 style="font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">
+						GRANELEIRO
+					</h1>
+					<h1 style="font-family: Arial, Helvetica, sans-serif;">
+						GRANELEIRO
+					</h1> -->
 					<tbody>
 						<tr v-for="(item, index) in desserts"
 							:key="item.name"

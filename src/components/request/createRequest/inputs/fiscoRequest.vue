@@ -1,3 +1,4 @@
+
 <template>
     <v-container>
         <v-card
@@ -6,41 +7,57 @@
         >
             <v-row>
                
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                label="Fornecedor(input)"
-                ></v-text-field>
-            </v-col>
+                <v-col
+                    md="3"
+                >
+                    <v-text-field
+                        v-model="propReceived.fisco.serialFisco"
+                        label="serie(input)"
+                    ></v-text-field>
+                </v-col>
 
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                label="Data de entrega(input)"
-                ></v-text-field>
-            </v-col>
+                <v-col
+                    md="3"
+                >
+                    <v-text-field
+                        v-model="propReceived.fisco.numberFisco"
+                        label="numero(input)"
+                    ></v-text-field>
+                </v-col>
 
+                <v-col
+                    sm="8"
+                >
+                    <v-text-field
+                        v-model="propReceived.fisco.keyFisco"
+                        label="Número da chave da nota"
+                    ></v-text-field>
+                </v-col>
             <v-col
-                md="3"
+              sm="1"
             >
-                <v-text-field
-                label="Valor frete(input)"
-                ></v-text-field>
+                <v-tooltip bottom color="#B3261E   ">
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                            color="warning"
+                            dark
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            mdi-alert-outline
+                        </v-icon>
+                    </template>
+                    
+                    <span>
+                        <v-icon color="#fff" dark>
+                            mdi-alert-outline
+                        </v-icon>
+
+                        Validar chave no site da sefaz
+                    </span>
+                </v-tooltip>
             </v-col>
-            <v-checkbox
-        v-model="checkbox"
-        :label="`Definir fornecedor`"
-      ></v-checkbox>
-            <v-btn block color="success"
-            elevation="2" @click="showModal"
-          >
-              <v-icon light>mdi-plus</v-icon>
-              Adicionar fornecedor
-            </v-btn>
             </v-row>
-            
     </v-card>
       
     </v-container>
@@ -49,7 +66,9 @@
 <script>
     export default {
         name: 'SupplierRequest',
-
+        props:{
+            propReceived: Object
+        },
         data: () => ({
         
         }),

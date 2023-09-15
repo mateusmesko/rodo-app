@@ -53,6 +53,7 @@ export default {
 			menuItens: [
 				{ title: this.$t('navgation.home'), icon: 'mdi-view-dashboard', router:'home' },
 				{ title: this.$t('navgation.listRequest'), icon: 'mdi-image', router:'list'},
+				{ title: this.$t('navgation.product'), icon: 'mdi-dropbox', router:'product'},
 			],
 
 			right: null,

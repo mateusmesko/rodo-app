@@ -19,6 +19,11 @@ const routes = [
     path: '/list',
     name: 'list',
     component: () => import('../components/request/listRequest')
+  },
+  {
+    path: '/product',
+    name: 'product',
+    component: () => import('../components/request/products')
   }
 ]
 

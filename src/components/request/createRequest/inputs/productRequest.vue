@@ -9,10 +9,15 @@
                 <v-col
                 md="3"
             >
-                <v-text-field 
-                    v-model="product.nameProduct"
-                    label="produto"
-                ></v-text-field>
+                <div>
+                    <v-autocomplete
+                        v-model="selectedOption"
+                        :items="options"
+                        label="Selecione um produto"
+                        :filter="customFilter"
+                        @input="onItemSelected"
+                    ></v-autocomplete>
+                </div>
             </v-col>
             
             <v-col
@@ -75,7 +80,8 @@
                 ></v-text-field>
                 <!-- verificar melhor como configurar o tipo de solicitação / despesa -->
             </v-col>
-            
+        </v-row>
+        <v-row>
             <v-col
                 md="3"
             >
@@ -85,7 +91,15 @@
                 label="Previsão de entrega"
                 ></v-text-field>
             </v-col>
-            
+
+            <v-col
+                md="3"
+            >
+                <v-text-field
+                    v-model="product.amontShipedProduct"
+                    label="quantidade entregue"
+                ></v-text-field>
+            </v-col>
 
             <v-col
                 md="3"
@@ -109,20 +123,60 @@
 </template>
 
 <script>
+import listProducts from '../../products'
     export default {
         name: 'ProductRequest',
         props: {
             product: Object
         },
+        components:{
+            listProducts
+            
+        },
         data: () => ({
             select: { state: 'Aguardando', color: 'alert' },
-            
+            selected:{},
             items: [
                 { state: 'Cancelada' ,color: 'red' },
                 { state: 'Aguardando', color: 'yellow lighten-1' },
                 { state: 'Entregue', color: 'green' },
                 { state: 'Entregue parcialmente', color: 'orange' }
             ],
+            
+            selectedOption: null,
+            options: [], // Aqui armazenaremos as opções do v-select
+            loading: false,
+       
         }),
+        mounted() {
+            this.loadOptionsFromLocalStorage(); 
+        },
+        methods:{
+            loadOptionsFromLocalStorage() {
+            const produtos = localStorage.getItem('apiData');
+            if (produtos) {
+                this.options = JSON.parse(produtos).map(item => ({
+                    
+                    text: `${item.Code} -> ${item.Description}` ,
+                    value: item,
+                }));
+            
+            }
+     
+        },
+        customFilter(item, queryText, itemText) {
+            const normalizedQuery = queryText.toLowerCase();
+            const normalizedItemText = itemText.toLowerCase();
+            return normalizedItemText.includes(normalizedQuery);
+            
+        },
+            onItemSelected(){
+                console.log('teste')
+                this.product.codeProduct = this.selectedOption.Code
+                this.product.nameProduct = this.selectedOption.Description
+                console.log(this.product)
+            }
+        }
+        
     }
 </script>

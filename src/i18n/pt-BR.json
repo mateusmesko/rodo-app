@@ -1,9 +1,14 @@
 {
     "titleAplication": "TITULO DA APLICAÇÃO",
-    
+    "toolbar":{
+        "imgs":{
+            "iconShort":"teste"
+        }
+    },
     "navgation":{
         "home":"Início",
-        "listRequest":"Pedidos de compra"
+        "listRequest":"Pedidos de compra",
+        "product":"produto"
     },
 
     "request":{
@@ -21,7 +26,6 @@
         "addRequest":{
             "headProductsList":{
                 "name":"Nome",
-                "supplier":"Fornecedor",
                 "value":"Valor",
                 "amountSolicited":"Quantia solicitada",
                 "amountShiped":"Quantia entregue",

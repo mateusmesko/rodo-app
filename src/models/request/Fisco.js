@@ -1,7 +1,7 @@
 export default class Fisco {
-    constructor(serialFisco, numberFisco, keyFiscoFisco) {
+    constructor(serialFisco, numberFisco, keyFisco) {
         this.serialFisco = serialFisco
         this.numberFisco = numberFisco
-        this.keyFiscoFisco = keyFiscoFisco
+        this.keyFisco = keyFisco
     }
 }

@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<v-expansion-panels>
+			
 			<v-expansion-panel v-if="!isModalVisible"
 				v-for="(item,i) of panel"
 				:key="i"
@@ -9,9 +10,8 @@
 				<v-expansion-panel-header>
 					{{ item.title }}
 				</v-expansion-panel-header>
-
 				<v-expansion-panel-content>
-					<component :is="item.component" />
+					<component :is="item.component" :propReceived="request"/>
 
 					<v-card  
 						v-if="item.tag === 3"
@@ -19,12 +19,11 @@
 						height="300"
 					>
 						<v-col md="3">
-							
-							
 							<v-btn block color="success"
 								elevation="2" @click="createProduct"
 							>
 								<v-icon light>mdi-plus</v-icon>
+
 								criar
 							</v-btn>
 						</v-col>
@@ -36,7 +35,7 @@
 								</thead>
 
 								<tbody>
-									<ListProducts :product="item" v-for="(item, index) in products" :key="index"/>
+									<ListProducts :product="item" v-for="(item, index) in request.products" :key="index"/>
 								</tbody>
 							</template>
 						</v-simple-table>
@@ -99,7 +98,6 @@ export default {
 
 		headerProducts:[
 			{title:'request.addRequest.headProductsList.name'},
-			{title:'request.addRequest.headProductsList.supplier'},
 			{title:'request.addRequest.headProductsList.value'},
 			{title:'request.addRequest.headProductsList.amountSolicited'},
 			{title:'request.addRequest.headProductsList.amountShiped'},
@@ -109,19 +107,22 @@ export default {
 		],
 
 		products: [],
+		
 		panel:[
 		
 			{title:'Dados do pedido', tag:1, component:'InfoRequest'},
-			{title:'Dados do fornecedor', tag:5,component:'FiscoRequest'},
-			{title:'Dados de nota', tag:2, component:'SupplierRequest'},
+			{title:'Dados do fornecedor', tag:5,component:'SupplierRequest'},
+			{title:'Dados de nota', tag:2, component:'FiscoRequest'},
 			{title:'Produtos de pedido', tag:3, component:'ProductRequest'},
 			{title:'Pagamento', tag:4, component:'PaymentRequest'},
-			
 		]
     }),
 
     methods:{
-
+		valueProps(){
+			
+			return this.requestInfo
+		},
 		createProduct(){
 			this.insertProduct()
 			
@@ -129,7 +130,7 @@ export default {
 		insertProduct(){
 			this.productWorking = new RequestProduct
 			this.showModal()
-			this.products.push(this.productWorking)
+			this.request.products.push(this.productWorking)
 			console.log(this.products)
 		},
 		showModal() {
@@ -142,7 +143,7 @@ export default {
     },
 	created(){
 		this.request = new ModelRequest(1, this.requestInfo, this.requestSupplier, this.requestFisco, this.requestPayment,)
-		this.request.products = [1,2,3]
+		this.request.products = []
 		console.log(this.request)
 	}
 }

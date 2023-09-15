@@ -9,6 +9,7 @@
               sm="3"
             >
               <v-text-field
+                v-model="propReceived.info.numberRequest"
                 label="Número de pedido"
               ></v-text-field>
             </v-col>
@@ -18,6 +19,7 @@
               md="3"
             >
               <v-text-field type="date"
+              v-model="propReceived.info.dateStartRequest"
                 label="Data de emissao"
               ></v-text-field>
               <!-- COLOCAR DATA DE HOJE -->
@@ -27,6 +29,7 @@
               md="3"
             >
               <v-text-field type="date"
+              v-model="propReceived.info.dataShippedRequest"
                 label="Previsão de entrega"
               ></v-text-field>
             </v-col>
@@ -35,6 +38,7 @@
               md="3"
             >
               <v-text-field
+              v-model="propReceived.info.branchRequest"
                 label="Filial"
               ></v-text-field>
             </v-col>
@@ -43,6 +47,7 @@
               md="3"
             >
               <v-text-field
+              v-model="propReceived.info.userRequest"
                 label="Solicitante"
               ></v-text-field>
             </v-col>
@@ -51,6 +56,7 @@
               md="3"
             >
               <v-text-field
+                v-model="propReceived.info.contactRequest"
                 label="Contato"
               ></v-text-field>
             </v-col>
@@ -59,7 +65,7 @@
               md="3"
             >
                     <v-select
-                        v-model="select"
+                        v-model="propReceived.info.priorityRequest"
                         :hint="`Prioridade`"
                         :items="items"
                         :color="select.color"
@@ -79,9 +85,12 @@
 <script>
     export default {
         name: 'InfoRequest',
-
+        props:{
+          propReceived: Object
+        },
         data: () => ({
             select: { state: 'Baixa', color: 'alert' },
+            
             items: [
                 { state: 'Alta' ,color: 'red' },
                 { state: 'Media', color: 'warning' },

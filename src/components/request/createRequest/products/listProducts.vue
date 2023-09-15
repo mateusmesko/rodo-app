@@ -2,13 +2,11 @@
     <tr>
        
         <td>{{ product.nameProduct }}</td>
-        <td>teste</td>
+        <td>{{ product.valueProduct }}</td>
         <td>{{ product.amontProduct }}</td>
-        <td>{{ product.amontProduct }}</td>
-        <td v-if="product.amontProduct">{{ product.amontProduct }}</td> 
-        <td :color="product.color">{{ product.amontProduct }}</td>
-        <td v-if="product.statusShipProduct > 0">{{ product.statusShipProduct }}</td>
-        <td v-if="product.amontProduct == 0">Sem valor</td>
+        <td >{{ product.amontShipedProduct }}</td> 
+        <v-alert :color="product.statusShipProduct.color">{{ product.statusShipProduct.state }}</v-alert>
+
         <td>
             <v-btn
                 icon
