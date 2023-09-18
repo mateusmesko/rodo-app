@@ -7,12 +7,13 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('../components/request')
+    component: () => import('../components/request/listRequest')
 //    component: () => import('../views/HomeRequest.vue')
   },
   {
     path: '/create',
     name: 'create',
+    props: true,
     component: () => import('../components/request/createRequest')
   },
   {

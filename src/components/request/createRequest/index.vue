@@ -35,14 +35,28 @@
 								</thead>
 
 								<tbody>
-									<ListProducts :product="item" v-for="(item, index) in request.products" :key="index"/>
+									<ListProducts :product="item" :index="index" v-for="(item, index) in request.products" @delete="deleteProduct" @edit="editProduct" :key="index"/>
+									
 								</tbody>
 							</template>
 						</v-simple-table>
 					</v-card>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
-			<modal 	:show="isModalVisible" :product="productWorking" @close="closeModal"/>
+			<v-btn block color="success"
+					:disabled="!request.info.numberRequest"
+                    elevation="2" @click="saveRequest(request)"
+                >
+                    <v-icon light>mdi-plus</v-icon>
+                    SALVAR PEDIDO
+                </v-btn>
+				<modal
+					:show="isModalVisible"
+					:product="productWorking"
+					@close="closeModal"
+					@save="saveModal"
+					:isEdit="idEdit" 
+				/>
 		</v-expansion-panels>
 	</div>
 </template>
@@ -82,8 +96,10 @@ export default {
 		ListProducts,
 		ButtonTooltip
     },
-
-    data: () => ({
+	props:{
+		requestEdit: Object
+	},
+    data: () => ({	
 		requestInfo: new RequestInfo,
 		requestFisco: new RequestFisco,
 		requestPayment: new RequestPayment,
@@ -95,19 +111,18 @@ export default {
 		BASE_ROUTE_I18N:'request.addRequest.',
 
 		request: null,
-
+		requestList:[],
 		headerProducts:[
 			{title:'request.addRequest.headProductsList.name'},
 			{title:'request.addRequest.headProductsList.value'},
 			{title:'request.addRequest.headProductsList.amountSolicited'},
 			{title:'request.addRequest.headProductsList.amountShiped'},
 			{title:'request.addRequest.headProductsList.statusShip'},
-			{title:'request.addRequest.headProductsList.valueShip'},
 			{title:'request.addRequest.headProductsList.actions'}
 		],
 
 		products: [],
-		
+		idEdit: false,
 		panel:[
 		
 			{title:'Dados do pedido', tag:1, component:'InfoRequest'},
@@ -119,6 +134,7 @@ export default {
     }),
 
     methods:{
+		
 		valueProps(){
 			
 			return this.requestInfo
@@ -130,21 +146,57 @@ export default {
 		insertProduct(){
 			this.productWorking = new RequestProduct
 			this.showModal()
-			this.request.products.push(this.productWorking)
-			console.log(this.products)
+			
 		},
 		showModal() {
 			this.isModalVisible = true;
 		},
-
+		saveModal() {
+      if (this.idEdit) {
+        // Se estiver no modo de edição
+        this.request.products[this.newId] = this.productWorking; // Atualiza o produto na lista
+        this.idEdit = false; // Desativa o modo de edição
+      } else {
+        // Se não estiver no modo de edição, adiciona um novo produto
+        this.request.products.push(this.productWorking);
+      }
+      this.isModalVisible = false;
+    },
 		closeModal() {
 			this.isModalVisible = false
 		},
+		saveRequest(newRequest){
+			
+			const requestGet = localStorage.getItem('requestList');
+			let requestList = requestGet ? JSON.parse(requestGet) : [];
+						console.log(requestList)
+			// Adiciona a nova solicitação à lista
+			requestList.push(newRequest);
+
+			// Armazena a lista atualizada no Local Storage
+			localStorage.setItem('requestList', JSON.stringify(requestList));
+			this.$router.push({ name: 'list' })
+		},
+		deleteProduct(newId){
+			this.request.products.splice(newId, 1)
+			console.log('delete', newId)
+		},
+		editProduct(newId) {
+			this.idEdit = true; // Ativa o modo de edição
+			this.productWorking = this.request.products[newId];
+			this.newId = newId;
+			this.showModal();
+			},
+
+			
     },
+
 	created(){
-		this.request = new ModelRequest(1, this.requestInfo, this.requestSupplier, this.requestFisco, this.requestPayment,)
-		this.request.products = []
-		console.log(this.request)
+
+			this.request = new ModelRequest(1, this.requestInfo, this.requestSupplier, this.requestFisco, this.requestPayment,)
+			this.request.products = []
+			console.log(this.request)
+		
 	}
 }
 </script>

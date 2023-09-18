@@ -1,7 +1,9 @@
 <template>
-	<div >
+	<div>
 		<template>
-			<v-btn @click="goRoute()" color="green">{{ $t('request.createRequest') }}</v-btn>
+			<v-btn class="ma-3" @click="goRoute()" color="green"><v-icon left>
+          mdi-plus
+        </v-icon> {{ $t('request.createRequest') }}</v-btn>
 			<v-simple-table>
 				<template v-slot:default>
 					<thead>
@@ -14,10 +16,10 @@
 						GRANELEIRO
 					</h1> -->
 					<tbody>
-						<tr v-for="(item, index) in desserts"
+						<tr v-for="(item, index) in requestList"
 							:key="item.name"
 						>
-							<td>{{ index + 1 }}</td>
+							<td>{{ item.info.numberRequest }}</td>
 							<td>
 								<span v-if="isMultipleNote()">
 									<v-btn v-if="isMultipleNote()" @click="testeBTNTOOLBAR" icon>
@@ -30,7 +32,7 @@
 								</span>
 
 								<span v-if="!isMultipleNote()">
-									<v-btn @click="testeBTNTOOLBAR" icon>
+									<v-btn  @click="testeBTNTOOLBAR" icon>
 										<ButtonTooltip
 											corzinha="red"
 											:icon="$t('request.icon.onlyNote')"
@@ -52,7 +54,7 @@
 									/>
 								</v-btn>
 
-								<v-btn @click="testeBTNTOOLBAR" icon>
+								<v-btn @click="editRequest(item)" icon>
 									<ButtonTooltip
 										corzinha="green"
 										:icon="$t('request.icon.editRequest')"
@@ -158,12 +160,14 @@ export default {
 		},
 		testeBTNTOOLBAR(){
 			console.log('teste btn')
+		},
+		editRequest(requestEdit){
+			console.log(requestEdit)
 		}
+	},
+	created(){
+		const requestGet = localStorage.getItem('requestList');
+ 		this.requestList = requestGet ? JSON.parse(requestGet) : [];
 	}
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>

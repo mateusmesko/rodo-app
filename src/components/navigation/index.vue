@@ -5,12 +5,13 @@
 				height="400"
 				width="256"
 				class="mx-auto"
+				
 			>
-				<v-navigation-drawer permanent>
+				<v-navigation-drawer style="border-radius: 0%;" color="black" height="100vh" class="overflow-y-auto" >
 					<v-list-item>
-						<v-list-item-content>
+						<v-list-item-content  class="overflow-hidden">
 							<v-list-item-title class="text-h6">
-								{{ $t('titleAplication') }}
+								<img :src="require('@/assets/RODO_LOGO.svg')"  />
 							</v-list-item-title>
 
 							<v-list-item-subtitle>
@@ -20,11 +21,7 @@
 					</v-list-item>
 			
 					<v-divider></v-divider>
-
-					<v-list
-						dense
-						nav
-					>
+					<v-list dense nav dark>
 						<v-list-item
 							v-for="item in menuItens"
 							:key="item.title"
@@ -32,14 +29,13 @@
 							link
 						>
 							<v-list-item-icon>
-								<v-icon>{{ item.icon }}</v-icon>
+							<v-icon class="blue--text">{{ item.icon }}</v-icon>
 							</v-list-item-icon>
-				
 							<v-list-item-content>
-								<v-list-item-title>{{ item.title }}</v-list-item-title>
+							<v-list-item-title class="blue--text">{{ item.title }}</v-list-item-title>
 							</v-list-item-content>
 						</v-list-item>
-					</v-list>
+						</v-list>
 				</v-navigation-drawer>
 			</v-card>
 		</v-app>
@@ -51,9 +47,8 @@ export default {
 	data() {
 		return {
 			menuItens: [
-				{ title: this.$t('navgation.home'), icon: 'mdi-view-dashboard', router:'home' },
-				{ title: this.$t('navgation.listRequest'), icon: 'mdi-image', router:'list'},
-				{ title: this.$t('navgation.product'), icon: 'mdi-dropbox', router:'product'},
+				{ title: this.$t('navgation.home'), icon: 'mdi-home', router:'home' },
+				{ title: this.$t('navgation.listRequest'), icon: 'mdi-list-box', router:'list'},
 			],
 
 			right: null,

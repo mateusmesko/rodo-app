@@ -7,7 +7,7 @@
       <Navigation v-if="this.drawer" @close="drawerValidate"/>
     </v-navigation-drawer>
 
-    <v-app-bar app>
+    <v-app-bar app  dark color="black">
       <v-app-bar-nav-icon @click="drawerValidate"></v-app-bar-nav-icon>
 
       <v-toolbar-title>{{ $t('titleAplication') }}</v-toolbar-title>
@@ -29,13 +29,86 @@ export default {
   },
 
   data: () => ({
-    drawer: false 
+    drawer: false,
+
+    apiUrl: 'http://rodoparanaimplementos120531.protheus.cloudtotvs.com.br:4050/rest/',
+        items: [], // Armazenará os dados da API
+  
+        listProducts:[],
+  
+        hasNext:null
   }),
 
   methods:{
     drawerValidate(){
       this.drawer = this.drawer ?  false : true
-    }
+    },
+
+
+    saveToLocalStorage() {
+        // Salvar os dados no localStorage
+        localStorage.setItem('apiData', JSON.stringify(this.listProducts));
+      },
+      
+      showLocalStorageData() {
+        // Recuperar os dados do localStorage e exibi-los
+        const produtos = localStorage.getItem('apiData');
+        this.listProducts = produtos ? JSON.parse(produtos) : [];
+        console.log(localStorage)
+       
+      },
+      takeValuesApi(){
+        this.fetchData(5)
+      },
+      fetchData(page) {
+        let pageSize = 5000
+        // console.log( (pageSize * page - pageSize) + 'a' +  (pageSize * page))
+        // console.log(page)
+        // console.log(this.apiUrl + `api/retail/v1/retailItem?page=1&pageSize=${pageSize}&fields=code,description`)
+        let API_URL =this.apiUrl + `api/retail/v1/retailItem?page=1&pageSize=${pageSize}&fields=code,description`
+
+        axios
+            .get(API_URL)
+            .then(response => {
+            // Verifica se a resposta da API foi bem-sucedida (código de status 200)
+            if (response.status !== 200 ) {
+                console.error('Erro na solicitação:', response.status);
+                throw new Error('Não foi possível acessar a API da TOTVS');
+            }
+  
+            // Armazena os dados da API na variável 'items'
+            const hasNext = response.data.hasNext;
+            const items = response.data.items;
+  
+            // Adicione os itens à lista existente
+            this.listProducts = this.listProducts.concat(items);
+            // console.log("the list",this.listProducts)
+
+            this.saveToLocalStorage()
+            // console.log(this.listProducts)
+            // console.log( response.data, page)
+            // Se hasNext for verdadeiro, faça outra chamada recursiva
+                // if (hasNext) {
+                //     page=page+1
+                //     this.fetchData(page);
+                // }
+            })
+                .catch(error => {
+                console.error('Erro:', error);
+            });
+        }
+  },
+
+  created(){
+     this.takeValuesApi()
+    //  console.log("list",this.listProducts)
+    // this.saveToLocalStorage()
+    // this.showLocalStorageData()
   }
 };
 </script>
+
+<style scoped>
+
+
+</style>

@@ -9,9 +9,11 @@
 <script>
 export default {
     name: 'ToolBar',
+    
     props:{
         toobarList: Array
     },
+
     data: () => ({
         toolbartTitles:[
             {title:'request.table.numberRequest'},

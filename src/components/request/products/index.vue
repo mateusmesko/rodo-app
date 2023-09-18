@@ -1,7 +1,6 @@
 <template>
     <div>
         <v-autocomplete
-            
             v-model="productData"
             :items="options"
             label="Selecione um produto"
@@ -35,7 +34,7 @@
                 }));
             
             }
-            console.log('teste')
+            //console.log('teste')
      
         },
         customFilter(item, queryText, itemText) {
@@ -45,7 +44,7 @@
             
         },
         onItemSelected(){
-            console.log('teste')
+            //console.log('teste')
             
         }
     },

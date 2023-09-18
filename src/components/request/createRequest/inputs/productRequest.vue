@@ -1,9 +1,15 @@
 <template>
     <v-container >
+        
         <v-card 
           elevation="2"
           class="pa-2"
+          v-if="product"
         >
+        <v-form
+        ref="form"
+        @submit.prevent="submit"
+      >
             <v-row>
 
                 <v-col
@@ -11,7 +17,9 @@
             >
                 <div>
                     <v-autocomplete
-                        v-model="selectedOption"
+                    required
+                        :rules="[rules.required]"
+                        v-model="product.selectedOption"
                         :items="options"
                         label="Selecione um produto"
                         :filter="customFilter"
@@ -24,6 +32,7 @@
                 md="3"
             >
                 <v-text-field
+                    :rules="[rules.required]"
                     v-model="product.amontProduct"
                     label="quantidade"
                 ></v-text-field>
@@ -33,10 +42,10 @@
                 md="3"
             >
                 <v-text-field
-                v-model="product.discountProduct"
-                type="number"
-                prefix="$"
-                label="Desconto"
+                    :rules="[rules.required]"
+                    v-model="product.discountProduct"
+                    prefix="$"
+                    label="Desconto"
                 ></v-text-field>
             </v-col>
 
@@ -45,10 +54,10 @@
                 md="3"
             >
                 <v-text-field
-                v-model="product.valueProduct"
-                type="number"
-                prefix="$"
-                label="valor"
+                    :rules="[rules.required]"
+                    v-model="product.valueProduct"
+                    prefix="$"
+                    label="valor"
                 ></v-text-field>
                 <!-- verificar depois o campo para ter 2 casas decimais -->
             </v-col>
@@ -56,8 +65,9 @@
                 md="3"
             >
                 <v-text-field
-                v-model="product.observationProduct"
-                label="Observação"
+                    :rules="[rules.required]"
+                    v-model="product.observationProduct"
+                    label="Observação"
                 ></v-text-field>
             </v-col>
 
@@ -66,8 +76,9 @@
                 md="3"
             >
                 <v-text-field
-                v-model="product.suggestionProduct"
-                label="Sugestão(link do produto)"
+                    :rules="[rules.required]"
+                    v-model="product.suggestionProduct"
+                    label="Sugestão(link do produto)"
                 ></v-text-field>
             </v-col>
 
@@ -75,49 +86,65 @@
                 md="3"
             >
                 <v-text-field
-                v-model="product.reasonProduct"
-                label="Motivo de solicitação"
+                    :rules="[rules.required]"
+                    v-model="product.reasonProduct"
+                    label="Motivo de solicitação"
                 ></v-text-field>
                 <!-- verificar melhor como configurar o tipo de solicitação / despesa -->
             </v-col>
         </v-row>
-        <v-row>
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                v-model="product.dataShipDateProduct"
-                type="date"
-                label="Previsão de entrega"
-                ></v-text-field>
-            </v-col>
+            <v-row>
+                <v-col
+                    md="3"
+                >
+                    <v-text-field
+                        :rules="[rules.required]"
+                        v-model="product.dataShipDateProduct"
+                        type="date"
+                        label="Previsão de entrega"
+                    ></v-text-field>
+                </v-col>
 
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    v-model="product.amontShipedProduct"
-                    label="quantidade entregue"
-                ></v-text-field>
-            </v-col>
+                <v-col
+                    md="3"
+                >
+                    <v-text-field
+                        v-model="product.amontShipedProduct"
+                        label="quantidade entregue"
+                    ></v-text-field>
+                </v-col>
 
-            <v-col
-                md="3"
-            >
-                 <v-select
-                    v-model="product.statusShipProduct"
-                    :hint="`${select.state}`"
-                    :items="items"
-                    :color="select.color"
-                    item-text="state"
-                    item-value="abbr"
-                    label="Status de entrega"
-                    persistent-hint
-                    return-object
-                    single-line
-                ></v-select>
-            </v-col>
+                <v-col
+                    md="3"
+                >
+                    <v-select
+                        :rules="[rules.required]"
+                        v-model="product.statusShipProduct"
+                        :hint="`${select.state}`"
+                        :items="items"
+                        :color="select.color"
+                        item-text="state"
+                        item-value="abbr"
+                        label="Status de entrega"
+                        persistent-hint
+                        return-object
+                        single-line
+                    ></v-select>
+                </v-col>
             </v-row>
+				
+                <v-btn 
+                    color="green" 
+                    @click="saveModal" 
+                    :disabled="!formIsValid"
+                    elevation="0"
+                >
+                    <v-icon>
+                        mdi-check
+                    </v-icon>Salvar
+                </v-btn>
+            </v-form>
+           
         </v-card>
     </v-container>
 </template>
@@ -136,6 +163,13 @@ import listProducts from '../../products'
         data: () => ({
             select: { state: 'Aguardando', color: 'alert' },
             selected:{},
+            rules: {
+                required: value => !!value || 'Campo obrigatorio.',
+                // counter: value => value.length <= 20 || 'Max 20 characters',
+                // email: value => {
+                // const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                // return pattern.test(value) || 'Invalid e-mail.'
+                },
             items: [
                 { state: 'Cancelada' ,color: 'red' },
                 { state: 'Aguardando', color: 'yellow lighten-1' },
@@ -148,6 +182,14 @@ import listProducts from '../../products'
             loading: false,
        
         }),
+        computed: {
+            formIsValid () {
+                return(
+                    this.product.selectedOption &&
+                    this.product.statusShipProduct
+                )
+            }
+        },
         mounted() {
             this.loadOptionsFromLocalStorage(); 
         },
@@ -172,11 +214,14 @@ import listProducts from '../../products'
         },
             onItemSelected(){
                 console.log('teste')
-                this.product.codeProduct = this.selectedOption.Code
-                this.product.nameProduct = this.selectedOption.Description
+                this.product.codeProduct = this.product.selectedOption.Code
+                this.product.nameProduct = this.product.selectedOption.Description
                 console.log(this.product)
-            }
+            },
+
+            saveModal() {
+			    this.$emit('save');
+		    },
         }
-        
     }
 </script>

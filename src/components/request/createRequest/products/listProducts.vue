@@ -1,6 +1,5 @@
 <template>
     <tr>
-       
         <td>{{ product.nameProduct }}</td>
         <td>{{ product.valueProduct }}</td>
         <td>{{ product.amontProduct }}</td>
@@ -9,6 +8,7 @@
 
         <td>
             <v-btn
+                @click="editProduct"
                 icon
                 color="blue"
             >
@@ -16,6 +16,7 @@
             </v-btn>
 
             <v-btn
+                @click="deleteProduct"
                 icon
                 color="red"
             >
@@ -29,11 +30,22 @@
     export default {
         name: 'ListProducts',
         props:{
-            product: Object
+            product: Object,
+            index: Number,
         },
 
         data: () => ({
         
         }),
+        methods:{
+            deleteProduct(){
+                const newId = this.index
+                this.$emit('delete', newId)
+            },
+            editProduct(){
+                const newId = this.index
+                this.$emit('edit', newId)
+            }
+        }
     }
 </script>

@@ -21,7 +21,7 @@
 				</v-col>
 			</v-row>
 			
-			<ProductRequest :product="product"/>
+			<ProductRequest @save="saveModal" :product="product"/>
 		</div>
 	</div>
 </template>
@@ -45,6 +45,9 @@ export default {
 	methods: {
 		closeModal() {
 			this.$emit('close');
+		},
+		saveModal() {
+			this.$emit('save');
 		}
 	}
 };
