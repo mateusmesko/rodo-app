@@ -13,7 +13,15 @@ const routes = [
   {
     path: '/create',
     name: 'create',
-    props: true,
+    component: () => import('../components/request/createRequest')
+  },
+  {
+    path: '/created/:id',
+    name: 'createdWithId',
+    props: (route) => ({
+      id: route.params.id,
+      editData: route.query.editData,
+    }),
     component: () => import('../components/request/createRequest')
   },
   {

@@ -40,10 +40,13 @@
         methods:{
             deleteProduct(){
                 const newId = this.index
-                this.$emit('delete', newId)
+                this.eventEmit('delete',newId)
             },
             editProduct(){
                 const newId = this.index
+                this.eventEmit('edit',newId)
+            },
+            eventEmit(event,newId){
                 this.$emit('edit', newId)
             }
         }

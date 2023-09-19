@@ -1,5 +1,8 @@
+import state from './state';
+
 export default {
-    testeMutation(state){
-        console.log('teste mutation')
+    getDataRequest(state){
+        const requestGet = localStorage.getItem('requestList');
+        state.request ? JSON.parse(requestGet) : [];
     }
 };

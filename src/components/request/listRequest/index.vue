@@ -9,12 +9,6 @@
 					<thead>
 						<toolbar :toobarList="toolbartTitles"/>
 					</thead>
-					<!-- <h1 style="font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">
-						GRANELEIRO
-					</h1>
-					<h1 style="font-family: Arial, Helvetica, sans-serif;">
-						GRANELEIRO
-					</h1> -->
 					<tbody>
 						<tr v-for="(item, index) in requestList"
 							:key="item.name"
@@ -54,7 +48,7 @@
 									/>
 								</v-btn>
 
-								<v-btn @click="editRequest(item)" icon>
+								<v-btn @click="editRequest(item, index)" icon>
 									<ButtonTooltip
 										corzinha="green"
 										:icon="$t('request.icon.editRequest')"
@@ -82,9 +76,7 @@ export default {
 		ButtonTooltip,
 	},
 
-	props: {
-		
-	},
+	
 
 	data: () => ({
 		toolbartTitles:[
@@ -95,58 +87,6 @@ export default {
 			{title:'request.table.statusOrdem'},
 			{title:'request.table.statusPay'},
 			{title:'request.table.actions'}
-		],
-
-		desserts: [
-			{
-				name: 'Frozen Yogurt',
-				calories: 159,
-			},
-
-			{
-				name: 'Ice cream sandwich',
-				calories: 237,
-			},
-
-			{
-				name: 'Eclair',
-				calories: 262,
-			},
-
-			{
-				name: 'Cupcake',
-				calories: 305,
-			},
-
-			{
-				name: 'Gingerbread',
-				calories: 356,
-			},
-
-			{
-				name: 'Jelly bean',
-				calories: 375,
-			},
-
-			{
-				name: 'Lollipop',
-				calories: 392,
-			},
-
-			{
-				name: 'Honeycomb',
-				calories: 408,
-			},
-
-			{
-				name: 'Donut',
-				calories: 452,
-			},
-
-			{
-				name: 'KitKat',
-				calories: 518,
-			},
 		],
 	}),
 
@@ -161,8 +101,8 @@ export default {
 		testeBTNTOOLBAR(){
 			console.log('teste btn')
 		},
-		editRequest(requestEdit){
-			console.log(requestEdit)
+		editRequest(requestEdit, index){
+			this.$router.push({ name: 'createdWithId',params: { id: index }, query: { editData: requestEdit } });
 		}
 	},
 	created(){

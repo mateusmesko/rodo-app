@@ -10,7 +10,7 @@
 				<v-expansion-panel-header>
 					{{ item.title }}
 				</v-expansion-panel-header>
-				<v-expansion-panel-content>
+				<v-expansion-panel-content v-if="request">
 					<component :is="item.component" :propReceived="request"/>
 
 					<v-card  
@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { db } from '../../../firebaseDb'
+
 import InfoRequest from './inputs/infoRequest.vue'
 import ProductRequest from './inputs/productRequest.vue'
 import PaymentRequest from './inputs/paymentRequest.vue'
@@ -97,8 +99,11 @@ export default {
 		ButtonTooltip
     },
 	props:{
-		requestEdit: Object
-	},
+		index: {
+			type: Number,
+			default: null,
+			},
+		},
     data: () => ({	
 		requestInfo: new RequestInfo,
 		requestFisco: new RequestFisco,
@@ -130,79 +135,111 @@ export default {
 			{title:'Dados de nota', tag:2, component:'FiscoRequest'},
 			{title:'Produtos de pedido', tag:3, component:'ProductRequest'},
 			{title:'Pagamento', tag:4, component:'PaymentRequest'},
-		]
+		],
+		form:{
+			subject:'teste',
+			description:'teste'
+		}
     }),
-
     methods:{
-		
 		valueProps(){
-			
 			return this.requestInfo
 		},
-		createProduct(){
-			this.insertProduct()
-			
-		},
-		insertProduct(){
-			this.productWorking = new RequestProduct
+
+		createProduct(){//
+			this.insertModelProduct()
 			this.showModal()
-			
+		},
+		insertModelProduct(){
+			this.productWorking = new RequestProduct
 		},
 		showModal() {
-			this.isModalVisible = true;
+			this.isModalVisible = true
 		},
+		
 		saveModal() {
-      if (this.idEdit) {
-        // Se estiver no modo de edição
-        this.request.products[this.newId] = this.productWorking; // Atualiza o produto na lista
-        this.idEdit = false; // Desativa o modo de edição
-      } else {
-        // Se não estiver no modo de edição, adiciona um novo produto
-        this.request.products.push(this.productWorking);
-      }
-      this.isModalVisible = false;
-    },
+			this.isEdited() ? this.editedRequestProduct() : this.saveNewRequestProduct()
+                                                                                                                                                                                                                            
+			this.closeModal()
+		},
+		isEdited(){
+			return this.idEdit
+		},
+		editedRequestProduct(){
+			this.request.products[this.newId] = this.productWorking
+			this.idEdit = false
+		},
+		saveNewRequestProduct(){
+			this.request.products.push(this.productWorking);
+		},
+
 		closeModal() {
 			this.isModalVisible = false
 		},
-		saveRequest(newRequest){
-			
-			const requestGet = localStorage.getItem('requestList');
-			let requestList = requestGet ? JSON.parse(requestGet) : [];
-						console.log(requestList)
-			// Adiciona a nova solicitação à lista
-			requestList.push(newRequest);
 
-			// Armazena a lista atualizada no Local Storage
+		saveRequest(newRequest){
+			this.form.subject='thiago gomez'
+			db.collection('request').add(newRequest).then(()=>{
+
+			})
+			let requestList = this.fetchAllRequest()
+			
+			if(this.$route.params.id+1){
+				requestList[this.$route.params.id] = newRequest
+				// requestList[this.$route.params.id].fisco = newRequest.fisco
+				// requestList[this.$route.params.id].id = newRequest.id
+				// requestList[this.$route.params.id].info = newRequest.info
+				// requestList[this.$route.params.id].payment = newRequest.payment
+				// requestList[this.$route.params.id].products = newRequest.products
+				// requestList[this.$route.params.id].supplier = newRequest.supplier
+			}else {
+				requestList.push(newRequest)
+			}
+			this.addNewRequest(requestList)
+			this.backRouteList()
+		},
+		fetchAllRequest(){
+			const requestGet = localStorage.getItem('requestList');
+			return requestGet ? JSON.parse(requestGet) : [];
+		},
+		addNewRequest(requestList){
 			localStorage.setItem('requestList', JSON.stringify(requestList));
+		},
+		backRouteList(){
 			this.$router.push({ name: 'list' })
 		},
+
 		deleteProduct(newId){
 			this.request.products.splice(newId, 1)
-			console.log('delete', newId)
 		},
+
 		editProduct(newId) {
-			this.idEdit = true; // Ativa o modo de edição
+			this.idEdit = true;
 			this.productWorking = this.request.products[newId];
 			this.newId = newId;
 			this.showModal();
-			},
+		},	
 
+		configModel(){
 			
+			this.request = new ModelRequest(1, this.requestInfo, this.requestSupplier, this.requestFisco, this.requestPayment,)
+			this.request.products = []
+		},
+
+		
     },
 
 	created(){
+		this.configModel()
+		
+		if(this.$route.params.id+1){
+			
 
-			this.request = new ModelRequest(1, this.requestInfo, this.requestSupplier, this.requestFisco, this.requestPayment,)
-			this.request.products = []
+			this.request = this.fetchAllRequest()
+			this.request = this.request[this.$route.params.id]
 			console.log(this.request)
+		}
 		
 	}
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
-  

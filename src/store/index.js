@@ -10,10 +10,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   getters: {
-    testeGetters(){
-      var teste = 1
-      
-      return teste
+    requestGet(){
+      const requestGet = localStorage.getItem('requestList');
+      return requestGet ? JSON.parse(requestGet) : [];
     }
   },
 
@@ -29,7 +28,7 @@ export default new Vuex.Store({
 // import Vue from 'vue';
 // import Vuex from 'vuex';
 
-// import actions from './getters';
+
 
 // Vue.use(Vuex);
 

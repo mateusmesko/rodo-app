@@ -6,7 +6,6 @@
           class="pa-2"
         >
             <v-row>
-               
                 <v-col
                     md="3"
                 >

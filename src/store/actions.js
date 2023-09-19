@@ -1,5 +1,6 @@
 export default {
-    testeActions(){
-        console.log('testeAction')
+    getRequest(state){
+        const requestGet = localStorage.getItem('requestList');
+        return requestGet ? JSON.parse(requestGet) : [];
     }
 };
