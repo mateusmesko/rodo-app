@@ -5,30 +5,24 @@
           class="pa-2"
         >
             <v-row>
-                <v-col
-                    md="3"
-                >
+                <v-col md="3" >
                     <v-text-field
                         v-model="propReceived.supplier.nameSupplier"
                         label="Fornecedor(input)"
                     ></v-text-field>
                 </v-col>
 
-                <v-col
-                    md="3"
-                >
+                <v-col md="3">
                     <v-text-field
                         v-model="propReceived.supplier.dateShipedSupplier"
                         label="Data de entrega(input)"
                     ></v-text-field>
                 </v-col>
 
-                <v-col
-                    md="3"
-                >
+                <v-col md="3">
                     <v-text-field
-                    v-model="propReceived.supplier.valueShipedSupplier"
-                    label="Valor frete(input)"
+                        v-model="propReceived.supplier.valueShipedSupplier"
+                        label="Valor frete(input)"
                     ></v-text-field>
                 </v-col>
 
@@ -37,16 +31,15 @@
                     :label="`Definir fornecedor`"
                 ></v-checkbox>
 
-                <v-btn block color="success"
+                <v-btn 
+                    block color="success"
                     elevation="2" @click="showModal"
                 >
                     <v-icon light>mdi-plus</v-icon>
-                    Adicionar fornecedor
+                        Adicionar fornecedor
                 </v-btn>
             </v-row>
-            
-    </v-card>
-      
+        </v-card>
     </v-container>
 </template>
 

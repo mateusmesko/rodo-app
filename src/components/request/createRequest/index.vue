@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { db } from '../../../firebaseDb'
+// import { db } from '../../../firebaseDb'
 
 import InfoRequest from './inputs/infoRequest.vue'
 import ProductRequest from './inputs/productRequest.vue'
@@ -178,10 +178,10 @@ export default {
 		},
 
 		saveRequest(newRequest){
-			this.form.subject='thiago gomez'
-			db.collection('request').add(newRequest).then(()=>{
+			// this.form.subject='thiago gomez'
+			// db.collection('task').add(this.form).then(()=>{
 
-			})
+			// })
 			let requestList = this.fetchAllRequest()
 			
 			if(this.$route.params.id+1){

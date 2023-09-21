@@ -5,7 +5,7 @@
 				<v-col md="11">
 					<h2>Novo produto</h2>
 				</v-col>
-		
+
 				<v-col md="1">
 					<v-tooltip color="red" top>
 						<template v-slot:activator="{ on, attrs }">
@@ -20,7 +20,7 @@
 					</v-tooltip>
 				</v-col>
 			</v-row>
-			
+
 			<ProductRequest @save="saveModal" :product="product"/>
 		</div>
 	</div>

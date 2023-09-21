@@ -3,7 +3,7 @@
         
         <v-card 
           elevation="2"
-          class="pa-2"
+          class="pa-0 ma-0"
           v-if="product"
         >
         <v-form
@@ -11,91 +11,101 @@
         @submit.prevent="submit"
       >
             <v-row>
+                <v-col
+                    md="3"
+                >
+                    <div>
+                        <v-autocomplete
+                        required
+                            :rules="[rules.required]"
+                            v-model="product.selectedOption"
+                            :items="options"
+                            label="Selecione um produto"
+                            :filter="customFilter"
+                            @input="onItemSelected"
+                        ></v-autocomplete>
+                    </div>
+                </v-col>
+                
+                <v-col
+                    md="3"
+                    v-if="showField('amontProduct')"
+                >
+                    <v-text-field
+                      
+                        :rules="[rules.required]"
+                        v-model="product.amontProduct"
+                        label="quantidade"
+                    ></v-text-field>
+                </v-col>
 
                 <v-col
-                md="3"
-            >
-                <div>
-                    <v-autocomplete
-                    required
+                    md="3"
+                    v-if="showField('discountProduct')"
+                >
+                    <v-text-field
+                       
                         :rules="[rules.required]"
-                        v-model="product.selectedOption"
-                        :items="options"
-                        label="Selecione um produto"
-                        :filter="customFilter"
-                        @input="onItemSelected"
-                    ></v-autocomplete>
-                </div>
-            </v-col>
-            
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    :rules="[rules.required]"
-                    v-model="product.amontProduct"
-                    label="quantidade"
-                ></v-text-field>
-            </v-col>
-
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    :rules="[rules.required]"
-                    v-model="product.discountProduct"
-                    prefix="$"
-                    label="Desconto"
-                ></v-text-field>
-            </v-col>
+                        v-model="product.discountProduct"
+                        prefix="$"
+                        label="Desconto"
+                    ></v-text-field>
+                </v-col>
 
            
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    :rules="[rules.required]"
-                    v-model="product.valueProduct"
-                    prefix="$"
-                    label="valor"
-                ></v-text-field>
-                <!-- verificar depois o campo para ter 2 casas decimais -->
-            </v-col>
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    :rules="[rules.required]"
-                    v-model="product.observationProduct"
-                    label="Observação"
-                ></v-text-field>
-            </v-col>
-
+                <v-col
+                    md="3"
+                    v-if="showField('valueProduct')"
+                >
+                    <v-text-field
+                      
+                        :rules="[rules.required]"
+                        v-model="product.valueProduct"
+                        prefix="$"
+                        label="valor"
+                    ></v-text-field>
+                    <!-- verificar depois o campo para ter 2 casas decimais -->
+                </v-col>
+                    
+                <v-col
+                    md="3"
+                    v-if="showField('observationProduct')"
+                >
+                    <v-text-field
+                        :rules="[rules.required]"
+                        v-model="product.observationProduct"
+                        label="Observação"
+                    ></v-text-field>
+                </v-col>
             
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    :rules="[rules.required]"
-                    v-model="product.suggestionProduct"
-                    label="Sugestão(link do produto)"
-                ></v-text-field>
-            </v-col>
+                <v-col
+                    md="3"
+                    v-if="showField('suggestionProduct')"
+                >
+                    <v-text-field
+                        :rules="[rules.required]"
+                        v-model="product.suggestionProduct"
+                        label="Sugestão(link do produto)"
+                    ></v-text-field>
+                </v-col>
 
-            <v-col
-                md="3"
-            >
-                <v-text-field
-                    :rules="[rules.required]"
-                    v-model="product.reasonProduct"
-                    label="Motivo de solicitação"
-                ></v-text-field>
-                <!-- verificar melhor como configurar o tipo de solicitação / despesa -->
-            </v-col>
-        </v-row>
+                <v-col
+                    md="3"
+                    v-if="showField('reasonProduct')"
+                >
+                    <v-text-field
+                        :rules="[rules.required]"
+                        v-model="product.reasonProduct"
+                        label="Motivo de solicitação"
+                    ></v-text-field>
+                    <!-- verificar melhor como configurar o tipo de solicitação / despesa -->
+                </v-col>
+            </v-row>
+
             <v-row>
                 <v-col
                     md="3"
+                    v-if="showField('dataShipDateProduct')"
                 >
                     <v-text-field
                         :rules="[rules.required]"
@@ -107,6 +117,7 @@
 
                 <v-col
                     md="3"
+                    v-if="showField('amontShipedProduct')"
                 >
                     <v-text-field
                         v-model="product.amontShipedProduct"
@@ -116,6 +127,7 @@
 
                 <v-col
                     md="3"
+                    v-if="showField('statusShipProduct')"
                 >
                     <v-select
                         :rules="[rules.required]"
@@ -132,7 +144,6 @@
                     ></v-select>
                 </v-col>
             </v-row>
-				
                 <v-btn 
                     color="green" 
                     @click="saveModal" 
@@ -144,7 +155,6 @@
                     </v-icon>Salvar
                 </v-btn>
             </v-form>
-           
         </v-card>
     </v-container>
 </template>
@@ -176,16 +186,28 @@ import listProducts from '../../products'
                 { state: 'Entregue', color: 'green' },
                 { state: 'Entregue parcialmente', color: 'orange' }
             ],
-            
+            newRequestFieldsReturn:{
+                amontProduct:true,
+                discountProduct:false,
+                valueProduct:false,
+                observationProduct:false,
+                suggestionProduct:true,
+                reasonProduct:true,
+                dataShipDateProduct:false,
+                amontShipedProduct:false,
+                statusShipProduct:true,
+            },
             selectedOption: null,
             options: [], // Aqui armazenaremos as opções do v-select
             loading: false,
        
         }),
         computed: {
-            formIsValid () {
+            formIsValid() {
                 return(
                     this.product.selectedOption &&
+                    this.product.amontProduct &&
+                    this.product.reasonProduct &&
                     this.product.statusShipProduct
                 )
             }
@@ -222,6 +244,28 @@ import listProducts from '../../products'
             saveModal() {
 			    this.$emit('save');
 		    },
+            showField(field){ 
+                
+                const statusAndFieldValid = statusDefine =>{
+                    const listStatus = {
+                        newRequest: this.fieldReturn(field, this.newRequestFieldsReturn),   
+                    }
+                    return listStatus[statusDefine]
+                }
+    		    return statusAndFieldValid('newRequest')
+            },
+
+            fieldReturn(field, returnRequest){
+                const newRequestFields = statusDefine =>{
+                    const listStatus = returnRequest
+                    return listStatus[statusDefine]
+                }
+    		    return newRequestFields(field)
+            }
+        },
+        created(){
+            let requestGet = localStorage.getItem('status');
+            console.log(requestGet)
         }
     }
 </script>

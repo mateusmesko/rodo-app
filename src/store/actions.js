@@ -1,6 +1,5 @@
 export default {
-    getRequest(state){
-        const requestGet = localStorage.getItem('requestList');
-        return requestGet ? JSON.parse(requestGet) : [];
+    fieldReturn(state, field){
+        console.log('sisiuts black', field)
     }
 };
