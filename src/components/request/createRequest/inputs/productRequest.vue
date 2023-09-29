@@ -1,5 +1,5 @@
 <template>
-    <v-container >
+
         
         <v-card 
           elevation="2"
@@ -7,12 +7,13 @@
           v-if="product"
         >
         <v-form
-        ref="form"
-        @submit.prevent="submit"
-      >
+            ref="form"
+            @submit.prevent="submit"
+        >
             <v-row>
                 <v-col
                     md="3"
+                    v-if="showField('selectedOption')"
                 >
                     <div>
                         <v-autocomplete
@@ -51,7 +52,6 @@
                         label="Desconto"
                     ></v-text-field>
                 </v-col>
-
            
                 <v-col
                     md="3"
@@ -80,7 +80,7 @@
             
                 <v-col
                     md="3"
-                    v-if="showField('suggestionProduct')"
+                   
                 >
                     <v-text-field
                         :rules="[rules.required]"
@@ -88,33 +88,9 @@
                         label="Sugestão(link do produto)"
                     ></v-text-field>
                 </v-col>
-
-                <v-col
-                    md="3"
-                    v-if="showField('reasonProduct')"
-                >
-                    <v-text-field
-                        :rules="[rules.required]"
-                        v-model="product.reasonProduct"
-                        label="Motivo de solicitação"
-                    ></v-text-field>
-                    <!-- verificar melhor como configurar o tipo de solicitação / despesa -->
-                </v-col>
             </v-row>
 
             <v-row>
-                <v-col
-                    md="3"
-                    v-if="showField('dataShipDateProduct')"
-                >
-                    <v-text-field
-                        :rules="[rules.required]"
-                        v-model="product.dataShipDateProduct"
-                        type="date"
-                        label="Previsão de entrega"
-                    ></v-text-field>
-                </v-col>
-
                 <v-col
                     md="3"
                     v-if="showField('amontShipedProduct')"
@@ -156,11 +132,12 @@
                 </v-btn>
             </v-form>
         </v-card>
-    </v-container>
 </template>
 
 <script>
 import listProducts from '../../products'
+import { statusNewRequest } from './fields';
+
     export default {
         name: 'ProductRequest',
         props: {
@@ -171,36 +148,87 @@ import listProducts from '../../products'
             
         },
         data: () => ({
-            select: { state: 'Aguardando', color: 'alert' },
-            selected:{},
+            select: { state: 'Status de entrega'},
+            selected: {},
             rules: {
                 required: value => !!value || 'Campo obrigatorio.',
-                // counter: value => value.length <= 20 || 'Max 20 characters',
-                // email: value => {
-                // const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                // return pattern.test(value) || 'Invalid e-mail.'
-                },
+            },
             items: [
                 { state: 'Cancelada' ,color: 'red' },
                 { state: 'Aguardando', color: 'yellow lighten-1' },
                 { state: 'Entregue', color: 'green' },
                 { state: 'Entregue parcialmente', color: 'orange' }
             ],
-            newRequestFieldsReturn:{
-                amontProduct:true,
-                discountProduct:false,
-                valueProduct:false,
-                observationProduct:false,
-                suggestionProduct:true,
-                reasonProduct:true,
-                dataShipDateProduct:false,
-                amontShipedProduct:false,
-                statusShipProduct:true,
+            newRequestFieldsReturn: {
+                selectedOption: true,
+                amontProduct: true,
+                discountProduct: true,
+                valueProduct: true,
+                observationProduct: true,
+                suggestionProduct: true,
+                amontShipedProduct: true,
+                statusShipProduct: true
             },
+            newRequestFieldsReturn: {
+                selectedOption: true,
+                amontProduct: true,
+                discountProduct: true,
+                valueProduct: true,
+                observationProduct: true,
+                suggestionProduct: true,
+                amontShipedProduct: true,
+                statusShipProduct: true
+            },
+
+            confirmedRequest: {
+                selectedOption: true,
+                amontProduct: true,
+                discountProduct: true,
+                valueProduct: true,
+                observationProduct: true,
+                suggestionProduct: true,
+                amontShipedProduct: true,
+                statusShipProduct: true
+            },
+
+            boughtRequest: {
+                selectedOption: true,
+                amontProduct: true,
+                discountProduct: true,
+                valueProduct: true,
+                observationProduct: true,
+                suggestionProduct: true,
+                amontShipedProduct: true,
+                statusShipProduct: true
+            },
+
+            receivedRequest: {
+                selectedOption: true,
+                amontProduct: true,
+                discountProduct: true,
+                valueProduct: true,
+                observationProduct: true,
+                suggestionProduct: true,
+                amontShipedProduct: true,
+                statusShipProduct: true
+            },
+
+            Finalizado: {
+                selectedOption: true,
+                amontProduct: true,
+                discountProduct: true,
+                valueProduct: true,
+                observationProduct: true,
+                suggestionProduct: true,
+                amontShipedProduct: true,
+                statusShipProduct: true
+            },
+
             selectedOption: null,
             options: [], // Aqui armazenaremos as opções do v-select
             loading: false,
        
+            requestStatusNoew: ''
         }),
         computed: {
             formIsValid() {
@@ -217,55 +245,68 @@ import listProducts from '../../products'
         },
         methods:{
             loadOptionsFromLocalStorage() {
-            const produtos = localStorage.getItem('apiData');
-            if (produtos) {
-                this.options = JSON.parse(produtos).map(item => ({
-                    
-                    text: `${item.Code} -> ${item.Description}` ,
-                    value: item,
-                }));
-            
-            }
-     
-        },
-        customFilter(item, queryText, itemText) {
-            const normalizedQuery = queryText.toLowerCase();
-            const normalizedItemText = itemText.toLowerCase();
-            return normalizedItemText.includes(normalizedQuery);
-            
-        },
+                const produtos = localStorage.getItem('apiData');
+
+                if (produtos) {
+                    this.options = JSON.parse(produtos).map(item => ({
+                        text: `${item.Code} -> ${item.Description}` ,
+                        value: item,
+                    }));
+                }
+            },
+
             onItemSelected(){
-                console.log('teste')
                 this.product.codeProduct = this.product.selectedOption.Code
                 this.product.nameProduct = this.product.selectedOption.Description
-                console.log(this.product)
+            },
+
+            customFilter(item, queryText, itemText) {
+                const normalizedQuery = queryText.toLowerCase()
+                const normalizedItemText = itemText.toLowerCase()
+                return normalizedItemText.includes(normalizedQuery) 
             },
 
             saveModal() {
-			    this.$emit('save');
-		    },
-            showField(field){ 
-                
-                const statusAndFieldValid = statusDefine =>{
+                this.$emit('save');
+            },
+
+            showField(field){
+                const statusAndFieldValid = statusDefine => {
                     const listStatus = {
-                        newRequest: this.fieldReturn(field, this.newRequestFieldsReturn),   
+                        newRequest: this.fieldReturn(field, (this.newRequestFieldsReturn)),   
                     }
                     return listStatus[statusDefine]
                 }
-    		    return statusAndFieldValid('newRequest')
+                return statusAndFieldValid(this.requestStatusNoew)
             },
-
-            fieldReturn(field, returnRequest){
-                const newRequestFields = statusDefine =>{
+            fieldReturn(field, returnRequest) {
+                const newRequestFields = statusDefine => {
                     const listStatus = returnRequest
                     return listStatus[statusDefine]
                 }
-    		    return newRequestFields(field)
-            }
+                return newRequestFields(field)
+            },
+            showField(field){ 
+                const statusAndFieldValid = statusDefine =>{
+                    const listStatus = {
+                        newRequest: statusNewRequest(field, this.newRequestFieldsReturn),
+                        confirmedRequest: statusNewRequest(field, this.confirmedRequest),
+                        boughtRequest: statusNewRequest(field, this.boughtRequest),
+                        receivedRequest: statusNewRequest(field, this.receivedRequest),
+                        Finalizado: statusNewRequest(field, this.Finalizado),
+                    }
+
+                    return listStatus[statusDefine]
+                }
+                
+    		    return statusAndFieldValid( this.requestStatusNoew)
+            },
         },
+
         created(){
             let requestGet = localStorage.getItem('status');
-            console.log(requestGet)
+            this.requestStatusNoew = JSON.parse(requestGet)
+            console.log( JSON.parse(requestGet) )
         }
     }
 </script>

@@ -48,7 +48,22 @@ export default {
 		},
 		saveModal() {
 			this.$emit('save');
-		}
+		},
+		showField(field){ 
+			const statusAndFieldValid = statusDefine =>{
+				const listStatus = {
+					newRequest: statusNewRequest(field, this.newRequestFieldsReturn),
+                        confirmedRequest: statusNewRequest(field, this.confirmedRequest),
+                        boughtRequest: statusNewRequest(field, this.boughtRequest),
+                        receivedRequest: statusNewRequest(field, this.receivedRequest),
+                        Finalizado: statusNewRequest(field, this.Finalizado),
+				}
+
+				return listStatus[statusDefine]
+			}
+			
+			return statusAndFieldValid( this.propReceived.status)
+		},
 	}
 };
 </script>

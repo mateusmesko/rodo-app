@@ -1,56 +1,61 @@
-<template>
-	<div>
-		<template>
-			<v-btn class="ma-3" @click="goRoute()" color="green"><v-icon left>
+<template >
+	<div  style="background-color: rgb(209, 209, 209) !important; height: 100%;">
+		<template >
+		<v-btn class="ma-2 rodo-btn" elevation="0" dark @click="goRoute()" color="green"><v-icon left>
           		mdi-plus
         	</v-icon>
 		
-		{{ $t('request.createRequest') }}</v-btn>
-
-		
-		<v-btn class="ma-3" @click="changeStatus('CONFIRMAÇÃO')" color="green"><v-icon left>
+			{{ $t('request.createRequest') }}</v-btn>
+		<v-btn class="ma-2 rodo-btn" dark elevation="0" @click="changeStatus('CONFIRMAÇÃO')" color="blue"><v-icon left>
 			mdi-cart-arrow-down
         	</v-icon>
-		</v-btn> =>
-		<v-btn class="ma-3" @click="changeStatus('COMPRAS')" color="green"><v-icon left>
+			<span>SOLICITAÇÕES</span>
+		</v-btn>
+
+		<v-btn class="ma-2 rodo-btn" dark elevation="0" @click="changeStatus('COMPRAS')" color="blue"><v-icon left>
 			mdi-cart-check
         	</v-icon>
-		</v-btn> =>
+			<span>CONFIRMAÇÃO</span>
+		</v-btn>
 
-		<v-btn class="ma-3" @click="changeStatus('RECEBIMENTO')" color="orange"><v-icon left>
+		<v-btn class="ma-2 rodo-btn" dark elevation="0" @click="changeStatus('RECEBIMENTO')" color="blue"><v-icon left>
 			mdi-cart-percent
-        	</v-icon>	
-		</v-btn> =>
-		
-		<v-btn class="ma-3" @click="changeStatus('PAGAMENTO')" color="white"><v-icon left>
-			mdi-account-arrow-left
         	</v-icon>
+			<span>COMPRA</span>
 		</v-btn>
 		
-		<v-btn class="ma-3" @click="changeStatus('ENTRADA')" color="white"><v-icon left>
+		<v-btn class="ma-2 rodo-btn" dark elevation="0" @click="changeStatus('PAGAMENTO')" color="blue"><v-icon left>
+			mdi-account-arrow-left
+        	</v-icon>
+			<span>ENTREGUE</span>
+		</v-btn>
+		
+		<v-btn class="ma-2 rodo-btn" dark elevation="0" @click="changeStatus('ENTRADA')" color="blue"><v-icon left>
 			mdi-cart-plus
         	</v-icon>
-		</v-btn> =>
+			<span>FINALIZADO</span>
+		</v-btn>
 
-
-
-
-		{{ statusData }}
-			<v-simple-table>
+			<v-simple-table class="ma-2 my-2" style="border-radius: 10px; background-color: rgb(255, 255, 255);">
 				<template v-slot:default>
-					<thead>
+					<thead >
 						<toolbar :toobarList="toolbartTitles"/>
 					</thead>
+					
 					<tbody>
-						<tr v-for="(item, index) in requestList"
-							:key="item.name"
+						<tr style="border-left: 1px black ;" v-for="(item, index) in tasks"
+						
 						>
-							<td>{{ item.info.numberRequest }}</td>
-							<td>
+						
+							<td  style="border-left: 1px;" >
+								
+									{{ item.info.numberRequest }}
+								</td>
+							<td >
 								<span v-if="isMultipleNote()">
 									<v-btn v-if="isMultipleNote()" @click="testeBTNTOOLBAR" icon>
 										<ButtonTooltip 
-											corzinha="green" 
+											corzinha="blue" 
 											:icon="$t('request.icon.notes')"
 											:title="$t('request.iconTooltip.notes')"   
 										/>
@@ -68,9 +73,36 @@
 								</span>
 							</td>
 							<td>nome do fornecedor</td>
-							<td>status</td>
-							<td>status</td>
-							<td>status</td>
+							<td>
+								<v-alert
+									border="left"
+									colored-border
+									color="warning"
+									elevation="0"
+									class="ma-0 pa-3"
+									style=" background-color: rgb(251 140 0 / 24%);border-radius: 0%;"
+								>{{item.status}}</v-alert>
+							</td>
+							
+							<td>
+								<v-alert
+									border="left"
+									colored-border
+									color="success"
+									elevation="0"
+									style=" background-color: rgb(212, 255, 213);border-radius: 0%;"
+									class="ma-0 pa-3"
+								>status</v-alert>
+							</td>
+							
+							<td><v-alert
+									border="left"
+									colored-border
+									color="success"
+									elevation="0"
+									class="ma-0 pa-3"
+									style=" background-color: rgb(212, 255, 213);border-radius: 0%;"
+								>status</v-alert></td>
 							<td class="text-center">
 								<v-btn @click="testeBTNTOOLBAR" icon>
 									<ButtonTooltip
@@ -80,9 +112,9 @@
 									/>
 								</v-btn>
 
-								<v-btn @click="editRequest(item, index)" icon>
+								<v-btn @click="editRequest(item.id)" icon>
 									<ButtonTooltip
-										corzinha="green"
+										corzinha="blue"
 										:icon="$t('request.icon.editRequest')"
 										:title="$t('request.iconTooltip.editRequest')"
 									/>
@@ -97,6 +129,8 @@
 </template>
 
 <script>
+import { db } from '../../../firebaseDb'
+
 import ButtonTooltip from '../../tools/buttonIconTooltip'
 import Toolbar from '../../tools/toolbar'
 
@@ -124,6 +158,7 @@ export default {
 			name:'nome do uuario',
 			função:'cordenador'
 		},
+		tasks:[],
 		statusData:{},
 		statusList:{
 			newRequest:{name:'newRequest',color:'blue', icon:'mdi-account-arrow-left'},
@@ -145,27 +180,41 @@ export default {
 		testeBTNTOOLBAR(){
 			console.log('teste btn')
 		},
-		editRequest(requestEdit, index){
-			this.$router.push({ name: 'createdWithId',params: { id: index }, query: { editData: requestEdit } });
+		editRequest(ID_REQUEST){//requestEdit, index
+			
+			this.$router.push({ name: 'createdWithId',params: { id: ID_REQUEST } });
 		},
 		changeStatus(text){
 			this.statusData = text
-		}
-		// function para pegar valores do firebase
-		// async takeValues(){
-		// 	this.tasks = [];
-		// 	db.collection('task').get().then(snapshot => {
-		// 		snapshot.forEach(doc =>{
-		// 			let objectTask = doc.data();
-		// 			this.tasks.push(objectTask)
-		// 		})
-		// 	})
-		// 	console.log(this.tasks)
-		// },
+		},
+
+		async takeValues(){
+			this.tasks = [];
+			db.collection('task').get().then(snapshot => {
+				snapshot.forEach(doc =>{
+					let objectTask = doc.data();
+					objectTask.id = doc.id
+					this.tasks.push(objectTask)
+				})
+			})
+			
+			let teste = this.tasks
+		},
 	},
 	created(){
+		this.takeValues()
+		
 		const requestGet = localStorage.getItem('requestList');
  		this.requestList = requestGet ? JSON.parse(requestGet) : [];
 	}
 }
 </script>
+<style>
+
+*{
+	font-family: 'Roboto', sans-serif;
+}
+.rodo-btn{
+	border-radius: 10px !important;
+}
+</style>

@@ -7,7 +7,7 @@
 				class="mx-auto"
 				
 			>
-				<v-navigation-drawer style="border-radius: 0%;" color="black" height="100vh" class="overflow-y-auto" >
+				<v-navigation-drawer permanent style="border-radius: 0%;" color="black" height="100vh" class="overflow-y-auto" >
 					<v-list-item>
 						<v-list-item-content  class="overflow-hidden">
 							<v-list-item-title class="text-h6">
@@ -15,16 +15,22 @@
 							</v-list-item-title>
 
 							<v-list-item-subtitle>
-								{{ $t('titleAplication') }}
+								a{{ $t('titleAplication') }}
 							</v-list-item-subtitle>
 						</v-list-item-content>
 					</v-list-item>
-			
+					<div id="nav-container">
+  <div class="toggle-icon">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </div><!-- /toggle-icon -->
+</div><!-- /nav-container -->
 					<v-divider></v-divider>
 					<v-list dense nav dark>
 						<v-list-item
-							v-for="item in menuItens"
-							:key="item.title"
+							v-for="(item, index) in menuItens"
+							:key="index"
 							@click="navRouter(item.router)"
 							link
 						>
@@ -44,6 +50,7 @@
   
 <script>
 export default {
+	
 	data() {
 		return {
 			menuItens: [

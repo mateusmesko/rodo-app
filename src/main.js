@@ -6,11 +6,14 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 
+import VueMask from 'v-mask';
+
 import VueI18n from 'vue-i18n';
 
 Vue.config.productionTip = false
 
 Vue.use(VueI18n);
+Vue.use(VueMask);
 
 const messages = {
 	'pt-BR': require('@/i18n/pt-BR.json')

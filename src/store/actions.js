@@ -1,5 +1,6 @@
 export default {
-    fieldReturn(state, field){
-        console.log('sisiuts black', field)
-    }
+    buttonTeste({ commit }, { state, stateLink }) {
+        console.log(stateLink);
+        return stateLink;
+      },
 };

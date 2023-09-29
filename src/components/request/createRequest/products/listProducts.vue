@@ -47,7 +47,7 @@
                 this.eventEmit('edit',newId)
             },
             eventEmit(event,newId){
-                this.$emit('edit', newId)
+                this.$emit(event, newId)
             }
         }
     }

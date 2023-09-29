@@ -10,11 +10,14 @@ const routes = [
     component: () => import('../components/request/listRequest')
 //    component: () => import('../views/HomeRequest.vue')
   },
+
+
   {
     path: '/create',
     name: 'create',
     component: () => import('../components/request/createRequest')
   },
+
   {
     path: '/created/:id',
     name: 'createdWithId',
@@ -24,6 +27,7 @@ const routes = [
     }),
     component: () => import('../components/request/createRequest')
   },
+
   {
     path: '/list',
     name: 'list',

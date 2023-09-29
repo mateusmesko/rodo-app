@@ -1,68 +1,84 @@
 <template>
-	<div>
-		<v-expansion-panels>
+	<div style="background-color: rgb(207, 207, 207);height: 100%;">
+		<v-btn 	class="ma-2 rodo-btn" elevation="0" 
+				v-for="(item,i) of panel"
+				:key="i"
+				
+				@click="showExpansionPainel(item.component)" 
+				color="blue"
+		>
+			<ButtonTooltip
+				corzinha="white"
+				:icon="item.icon"
+				:title="item.title"
+			/>
+		</v-btn>
+
+		<v-btn 
+			color="success" 
+			class="ma-3"
+			:disabled="false"
+			elevation="0" @click="saveRequest(request)"
+		>
+			<!-- :disabled="!request.info.numberRequest" -->
+			<v-icon light>mdi-plus</v-icon>
 			
-			<v-expansion-panel v-if="!isModalVisible"
+			SALVAR PEDIDO
+		</v-btn>
+
+		<component class="ma-2 pa-6" style="background-color: rgb(231, 231, 231); border-radius: 16px;" :is="componentSelected" :propReceived="request"/>
+
+		<v-card  v-if="componentSelected == 'ProductRequest'"
+			style="background-color: rgb(231, 231, 231); border-radius: 16px;"
+			class="overflow-y-auto overflow-x-hidden ma-2 pa-0"
+			height="300"
+		>
+			<v-col md="3">
+				<v-btn block color="success"
+					elevation="2" @click="createProduct"
+				>
+					<v-icon light>mdi-plus</v-icon>
+						criar
+				</v-btn>
+			</v-col>
+			
+			<v-simple-table>
+				<template v-slot:default>
+					<thead>
+						<toolbar  style="background-color: rgb(231, 231, 231);" :toobarList="headerProducts"/>
+					</thead>
+
+					<tbody>
+						<ListProducts :product="item" :index="index" v-for="(item, index) in request.products" @delete="deleteProduct" @edit="editProduct" :key="index"/>
+						
+					</tbody>
+				</template>
+			</v-simple-table>
+		</v-card>
+		
+		<modal
+			:show="isModalVisible"
+			:product="productWorking"
+			@close="closeModal"
+			@save="saveModal"
+			:isEdit="idEdit" 
+		/>
+		
+		<v-expansion-panels>
+			<v-expansion-panel 
+			v-if="showArea(item) && !isModalVisible"
 				v-for="(item,i) of panel"
 				:key="i"
 			>
-
-				<v-expansion-panel-header>
-					{{ item.title }}
-				</v-expansion-panel-header>
 				<v-expansion-panel-content v-if="request">
-					<component :is="item.component" :propReceived="request"/>
-
-					<v-card  
-						v-if="item.tag === 3"
-						class="overflow-y-auto overflow-x-hidden"
-						height="300"
-					>
-						<v-col md="3">
-							<v-btn block color="success"
-								elevation="2" @click="createProduct"
-							>
-								<v-icon light>mdi-plus</v-icon>
-
-								criar
-							</v-btn>
-						</v-col>
-						
-						<v-simple-table>
-							<template v-slot:default>
-								<thead>
-									<toolbar :toobarList="headerProducts"/>
-								</thead>
-
-								<tbody>
-									<ListProducts :product="item" :index="index" v-for="(item, index) in request.products" @delete="deleteProduct" @edit="editProduct" :key="index"/>
-									
-								</tbody>
-							</template>
-						</v-simple-table>
-					</v-card>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
-			<v-btn block color="success"
-					:disabled="!request.info.numberRequest"
-                    elevation="2" @click="saveRequest(request)"
-                >
-                    <v-icon light>mdi-plus</v-icon>
-                    SALVAR PEDIDO
-                </v-btn>
-				<modal
-					:show="isModalVisible"
-					:product="productWorking"
-					@close="closeModal"
-					@save="saveModal"
-					:isEdit="idEdit" 
-				/>
 		</v-expansion-panels>
 	</div>
 </template>
 
 <script>
-// import { db } from '../../../firebaseDb'
+import { db } from '../../../firebaseDb'
 
 import InfoRequest from './inputs/infoRequest.vue'
 import ProductRequest from './inputs/productRequest.vue'
@@ -128,13 +144,13 @@ export default {
 
 		products: [],
 		idEdit: false,
+		componentSelected:'InfoRequest',
 		panel:[
-		
-			{title:'Dados do pedido', tag:1, component:'InfoRequest'},
-			{title:'Dados do fornecedor', tag:5,component:'SupplierRequest'},
-			{title:'Dados de nota', tag:2, component:'FiscoRequest'},
-			{title:'Produtos de pedido', tag:3, component:'ProductRequest'},
-			{title:'Pagamento', tag:4, component:'PaymentRequest'},
+			{title:'Dados do pedido', tag:1, component:'InfoRequest', show:true, icon:'mdi-information-variant-box-outline'},
+			{title:'Dados do fornecedor', tag:5,component:'SupplierRequest', show:true, icon:'mdi-human-dolly'},
+			{title:'Dados de nota', tag:2, component:'FiscoRequest', show:true, icon:'mdi-note-outline'},
+			{title:'Produtos de pedido', tag:3, component:'ProductRequest', show:true, icon:'mdi-archive-check-outline'},
+			{title:'Pagamento', tag:4, component:'PaymentRequest', show:true, icon:'mdi-cash'},
 		],
 		form:{
 			subject:'teste',
@@ -178,37 +194,74 @@ export default {
 		},
 
 		saveRequest(newRequest){
-			// this.form.subject='thiago gomez'
-			// db.collection('task').add(this.form).then(()=>{
-
-			// })
+			this.changeStatus()
+			
+			let request = JSON.stringify(newRequest)
+			
+			if(this.$route.params.id){
+				db.collection('task').doc(this.$route.params.id).set(JSON.parse(request))
+			}else {
+				this.form.subject='thiago gomez'
+				
+				
+				
+				db.collection('task').add(JSON.parse(request))
+			}
 			let requestList = this.fetchAllRequest()
 			
 			if(this.$route.params.id+1){
 				requestList[this.$route.params.id] = newRequest
-				// requestList[this.$route.params.id].fisco = newRequest.fisco
-				// requestList[this.$route.params.id].id = newRequest.id
-				// requestList[this.$route.params.id].info = newRequest.info
-				// requestList[this.$route.params.id].payment = newRequest.payment
-				// requestList[this.$route.params.id].products = newRequest.products
-				// requestList[this.$route.params.id].supplier = newRequest.supplier
-			}else {
+			} else {
 				requestList.push(newRequest)
 			}
 			this.addNewRequest(requestList)
 			this.backRouteList()
 		},
+		changeStatus(){
+			if (this.request.status == 'receivedRequest'){
+				this.request.status = 'Finalizado'
+
+			} if (this.request.status == 'boughtRequest') {
+				this.request.status = 'receivedRequest'
+
+			} if (this.request.status == 'confirmedRequest') {
+				this.request.status = 'boughtRequest'
+
+			} if (this.request.status == 'newRequest') {
+				this.request.status = 'confirmedRequest'
+			} if(!this.request.status){
+				this.request.status = 'newRequest'
+			}
+		},
+
+		showArea(item){
+			item.show = true
+			return this.newRequestArea(this.request.status, item)
+		},
+
+		newRequestArea(status, item){
+			if(status == 'newRequest' && item.component == 'ProductRequest' || item.component == 'InfoRequest' ){
+				return true
+			}
+			if(status == 'confirmedRequest' && (item.component == 'ProductRequest' || item.component == 'InfoRequest' || item.component == 'FiscoRequest')){
+				return true
+			}
+			if(status == 'boughtRequest' || status == 'receivedRequest' || status == 'Finalizado'){
+				return true
+			}
+		},
+
 		fetchAllRequest(){
 			const requestGet = localStorage.getItem('requestList');
 			return requestGet ? JSON.parse(requestGet) : [];
 		},
 		addNewRequest(requestList){
-			localStorage.setItem('requestList', JSON.stringify(requestList));
+			localStorage.setItem('status', JSON.stringify(requestList));
 		},
 		backRouteList(){
 			this.$router.push({ name: 'list' })
 		},
-
+		
 		deleteProduct(newId){
 			this.request.products.splice(newId, 1)
 		},
@@ -219,27 +272,29 @@ export default {
 			this.newId = newId;
 			this.showModal();
 		},	
-
+		showExpansionPainel(item){
+			this.componentSelected = item
+		},
 		configModel(){
-			
 			this.request = new ModelRequest(1, this.requestInfo, this.requestSupplier, this.requestFisco, this.requestPayment,)
 			this.request.products = []
 		},
-
-		
     },
 
 	created(){
 		this.configModel()
 		
-		if(this.$route.params.id+1){
-			
+		if(this.$route.params.id){
+			let id = this.$route.params.id
 
-			this.request = this.fetchAllRequest()
-			this.request = this.request[this.$route.params.id]
-			console.log(this.request)
+			db.collection('task').doc(id).get().then(snapshot =>{
+				const task = snapshot.data()
+				this.request = task
+			})
+		} else {
+			this.request.status = 'newRequest'
+			localStorage.setItem('status', JSON.stringify(this.request.status))
 		}
-		
 	}
 }
 </script>

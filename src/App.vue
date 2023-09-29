@@ -35,7 +35,7 @@ export default {
         items: [], // Armazenará os dados da API
   
         listProducts:[],
-  
+        loading:false,
         hasNext:null
   }),
 
@@ -58,14 +58,15 @@ export default {
        
       },
       takeValuesApi(){
-        this.fetchData(5)
+        this.fetchData(1)
       },
       fetchData(page) {
-        let pageSize = 5000
-        // console.log( (pageSize * page - pageSize) + 'a' +  (pageSize * page))
-        // console.log(page)
+        this.loading = false
+        let pageSize = 50000
+        console.log( (pageSize * page - pageSize) + 'a' +  (pageSize * page))
+        console.log(page)
         // console.log(this.apiUrl + `api/retail/v1/retailItem?page=1&pageSize=${pageSize}&fields=code,description`)
-        let API_URL =this.apiUrl + `api/retail/v1/retailItem?page=1&pageSize=${pageSize}&fields=code,description`
+        let API_URL =this.apiUrl + `api/retail/v1/retailItem?page=${page}&pageSize=${pageSize}&fields=code,description`
 
         axios
             .get(API_URL)
@@ -82,16 +83,10 @@ export default {
   
             // Adicione os itens à lista existente
             this.listProducts = this.listProducts.concat(items);
-            // console.log("the list",this.listProducts)
-
+            this.loading = true
+            console.log("the list",this.listProducts)
+            
             this.saveToLocalStorage()
-            // console.log(this.listProducts)
-            // console.log( response.data, page)
-            // Se hasNext for verdadeiro, faça outra chamada recursiva
-                // if (hasNext) {
-                //     page=page+1
-                //     this.fetchData(page);
-                // }
             })
                 .catch(error => {
                 console.error('Erro:', error);
